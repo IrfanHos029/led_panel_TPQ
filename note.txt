@@ -1,0 +1,7 @@
+fitur aplikasi :
+-set jam
+-set tanggal nasional dan jawa
+-set text berjalan 
+-set alarm masuk dan pulang
+-set lokasi panel
+-set brighness
