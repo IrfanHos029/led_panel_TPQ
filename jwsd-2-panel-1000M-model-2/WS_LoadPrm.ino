@@ -36,7 +36,7 @@
  *        Flash  32k bytes (of which .5k is used for the bootloader)
  *        SRAM   2k bytes
  *        EEPROM 1k byte
- */
+ *
 
 void serialEvent()
   { 
@@ -157,7 +157,7 @@ void LoadPrm()
  
       }
   // Get New/updeted parameter*/
-
+/*
   GetPrm();
   }
   
@@ -269,5 +269,5 @@ void SendPrm()
     Serial.print(drawInfo(280));Serial.print("\n");
     Serial.print(drawInfo(430));Serial.print("\n");
     Serial.print(F("=== end of parameters ==="));
-    */
-  }
+    *
+  }*/

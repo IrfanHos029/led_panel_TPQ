@@ -9,7 +9,8 @@ JAM_DIGITAL_MODIF 64 X 16
 #include <font/Font4x6.h>
 #include <font/SystemFont5x7.h>
 #include <font/Font3x5.h>
-//#include <font2/Font6x7.h>
+#include <font/EMSans8x16.h>
+#include <font/Arab6x7.h>
 
 #include <DS3231.h>
 #include <EEPROM.h>
@@ -24,16 +25,17 @@ JAM_DIGITAL_MODIF 64 X 16
 #define Font2 Font3x5
 #define Font1 SystemFont5x7
 #define Font4 KecNumber
-//#define Font5 Font6x7
+#define Font5 EMSans8x16
+#define Font6 Arab6x7
     
 // Object Declarations
-DMD3 Disp(2,1);
+DMD3 Disp(3,1);
 char *pasar[] ={"WAGE", "KLIWON", "LEGI", "PAHING", "PON"}; 
-char daysOfTheWeek[7][12] = {"Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jum'at", "Sabtu"};
+char daysOfTheWeek[7][12] = {"MINGGU", "SENIN", "SELASA", "RABU", "KAMIS", "JUM'AT", "SABTU"};
 char *mounthJawa[]= {"Muharram","Shafar","Rab.awal","Rab.akhir","Jum.awal","Jum.akhir","Rajab","Sya'ban","Ramadhan","Syawal","Dzulqa'dah","Dzulhijah"};
 char *sholatCall[] = {"IMSAK","SUBUH","TERBIT","DHUHA","DUHUR","ASHAR","MAGRIB","ISYA","JUM'AT"};               
-char *hariN[] = {"Minggu","Senin","Selasa","Rabu","Kamis","Jum'at","Sabtu"};
-char *bulanN[7][12] = {"Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"};
+char *hariN[]= {"Minggu","Senin","Selasa","Rabu","Kamis","Jum'at","Sabtu"};
+char *bulanN[]= {"Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"};
 int maxday[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 RTClib          RTC;
 DS3231          Clock;
@@ -103,6 +105,7 @@ boolean     DoSwap;
 int         RunSel    = 1; //
 int         RunFinish = 0 ;
 const byte reset = 4;
+bool trigg;
 
 //=======================================
 //===SETUP=============================== 
@@ -117,7 +120,7 @@ void setup()
          
     // Get Saved Parameter from EEPROM   
     updateTime();
-    GetPrm();
+//    GetPrm();
     //SendPrm();
 
     //init P10 Led Disp & Salam
@@ -130,37 +133,30 @@ void setup()
 void loop()
   { 
     // Reset & Init Display State
-    updateTime();   //every time
-    Reset(); //fungsion restart
-    DoSwap  = false ;
-    fType(1);  
+    update_All_data();   //every time
+//    Reset(); //fungsion restart
+    DoSwap  = false ;  
     Disp.clear();
-    
-    
-    // Timer Function every 10 Minutes
-    // Up All function with Timer in this fuction
-  //  Timer_Minute(1);
-
-
+  
     // =========================================
     // List of Display Component Block =========
     // =========================================
 
-    anim_JG(1);                                                 // addr: 1 show date time
-    
-    drawHari(2); //hari
-   
- //   dwMrq(drawInfo(430)   ,75,1,4);                            // addr: 10 show Info 3
-//    drawAzzan(100);                                             // addr: 100 show Azzan
-//    drawIqomah(101);                                            // addr: 101 show Iqomah
+//   mode_1(30,1);
+//   mode_2(30,1);
+//    mode_3(30,1);
+    mode_4(40,1);
+   runText(40,10);
+ //  runTEXT(35,1);
+
 
     // =========================================
     // Display Control Block ===================
     // =========================================
-    if(RunFinish==1) {RunSel = 2; RunFinish =0;}                      //after anim 1 set anim 2
-    if(RunFinish==2) {RunSel = 3; RunFinish =0;}                      //after anim 2 set anim 3
-    if(RunFinish==3) {RunSel = 4; RunFinish =0;}
-    if(RunFinish==4)  {RunSel = 1;  RunFinish =0;} 
+    if(RunFinish==1) {RunSel = 1; RunFinish =0;}                      //after anim 1 set anim 2
+   // if(RunFinish==2) {RunSel = 1; RunFinish =0;}                      //after anim 2 set anim 3
+//    if(RunFinish==3) {RunSel = 1; RunFinish =0;}
+//    if(RunFinish==4)  {RunSel = 1;  RunFinish =0;} 
   
     // =========================================
     // Swap Display if Change===================
@@ -176,14 +172,14 @@ void Disp_init()
   { Disp.setDoubleBuffer(true);
     Timer1.initialize(2000);
     Timer1.attachInterrupt(scan);
-    setBrightness(int(Prm.BL));
+    setBrightness(100);
     fType(1);  
     Disp.clear();
     Disp.swapBuffers();
     }
 
 void setBrightness(int bright)
-  { Timer1.pwm(9,255);}
+  { Timer1.pwm(9,20);}
 
 void scan()
   { Disp.refresh();}
@@ -243,3 +239,5 @@ void check_azzan()
           }
       }
   }
+
+ 

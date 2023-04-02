@@ -1,4 +1,80 @@
 
+char * jamUtama()
+{   //Disp.setFont(Font3);
+     static char Buff[20];
+   sprintf(Buff,"%02d:%02d|",now.hour(),now.minute());
+   return Buff;
+}
+
+//char * MonthName(int number)  // get  Month Name from EEPROM
+//    {
+//      static  char  locBuff[4];
+//      sprintf (locBuff,"s" ,bulanN[number]);
+//      return locBuff ;
+//    }
+
+    
+ char * masehi()
+ {
+  static  char  lockBuff [10];
+  sprintf (lockBuff , "%02d/%02d/%04d" ,now.day(),now.month (),now.year());
+  return  lockBuff ;
+ }
+
+  char * hariPasaran()
+ {
+  DoSwap = true;
+  static  char  lockBuff [10];
+  sprintf (lockBuff ,"%s %s" ,daysOfTheWeek[daynow-1],pasar[jumlahhari()%5]);
+  return  lockBuff ;
+ }
+ 
+ char*drawNama()
+  {    fType(3);
+      static char  out[150]="TPQ AS-SA'ADAH Gampang-Prambon";
+      return out;
+  }
+
+char *  drawMode_1(){
+  static char  text[]="TPQ AS-SA'ADAH Gampang-Prambon";
+  static char lockBuff[150];
+  // fType(5);  
+  sprintf(lockBuff, "    %s         %s %s %02d-%s-%04d         %02d %s %dH\0         ", text ,daysOfTheWeek[daynow-1],pasar[jumlahhari()%5],now.day(),bulanN[now.month()-1],now.year(),nowH.hD,mounthJawa[nowH.hM-1],nowH.hY);
+  return lockBuff;
+}
+
+
+
+char *  drawMode_2(){
+  static char  text[]="TPQ AS-SA'ADAH Gampang-Prambon";
+  static char lockBuff[150];
+  // fType(5);  
+  sprintf(lockBuff, "    %s      %02d %s %dH\0         ", text ,nowH.hD,mounthJawa[nowH.hM-1],nowH.hY);
+  return lockBuff;
+}
+
+char *  drawMode_3(){
+  static char  text[]="TPQ AS-SA'ADAH Gampang-Prambon";
+  static char lockBuff[150];
+   //fType(5);  
+  sprintf(lockBuff, "  %s %02d-%s-%04d %02d %s %dH\0          ", text ,now.day(),bulanN[now.month()-1],now.year(),nowH.hD,mounthJawa[nowH.hM-1],nowH.hY);
+  return lockBuff;
+}
+
+
+char *  drawHijriyah(){
+  static char lockBuff[50];  
+  fType(5);
+  sprintf(lockBuff, "  %s %s %02d %s %dH\0     ",daysOfTheWeek[daynow-1],pasar[jumlahhari()%5],nowH.hD,mounthJawa[nowH.hM-1],nowH.hY);
+  return lockBuff;
+}
+
+char *  TEXTRUN(){
+  static char  text[]="TPQ AS-SA'ADAH Gampang-Prambon";
+  static char lockBuff[200]; 
+  sprintf(lockBuff, "%s | %s %s | %02d-%s-%04d | %02d-%s-%dH\0          ", text ,daysOfTheWeek[daynow-1],pasar[jumlahhari()%5],now.day(),bulanN[now.month()-1],now.year(),nowH.hD,mounthJawa[nowH.hM-1],nowH.hY);
+  return lockBuff;
+}
 
 char* sholatN(int number) // get sholat name from EEPROM
     {
@@ -6,46 +82,4 @@ char* sholatN(int number) // get sholat name from EEPROM
       sprintf(locBuff,"%s" ,sholatCall[number]);
       return locBuff;
     }
-
-char * DayName(int number)  // get Day Name from EEPROM
-    {
-      static char  locBuff[7];
-      sprintf(locBuff,"s" ,hariN[number]);
-      return locBuff;
-    }
-
-char * MonthName(int number)  // get  Month Name from EEPROM
-    {
-      static char  locBuff[4];
-      sprintf(locBuff,"s" ,bulanN[number]);
-      return locBuff;
-    }
-
-char * drawDayDate()
-  {
-      char  locBuff[20];
-      static char  out[45];
-      
-      sprintf(out,"%s %s,%02d-%02d-%04d   %02d %s %dH\0",DayName(daynow),pasar[jumlahhari()%5],now.day(),now.month(),now.year(),nowH.hD,locBuff,nowH.hY);
-      return out;
-  }
-
-
-//    char *  drawMasjidName()
-//  {
-//      char  bufMN[]="test";
-//      static char  out[150];
-//      char  locBuff[45];
-//     // int   locLen = (Prm.MT-1)*10;
-//     // memccpy_P(locBuff,MT_Name_E+locLen  ,0,10);
-//     // EEPROM.get(55,bufMN);
-//      sprintf(out,"%s",locBuff,bufMN);
-//      return out;
-//  }
-  
  
-char *  drawNama()
-  {
-      static char  out[150]="Suhartono.Khusnul.Irfan.Alfin.Alfian";
-      return out;
-  }
