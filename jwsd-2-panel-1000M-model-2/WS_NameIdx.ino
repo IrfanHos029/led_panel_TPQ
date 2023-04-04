@@ -31,7 +31,7 @@ char * jamUtama()
  
  char*drawNama()
   {    fType(3);
-      static char  out[150]="TPQ AS-SA'ADAH Gampang-Prambon";
+      static char  out[150]="TPQ AS-SA'ADAH Gampang,Prambon,Sidoarjo";
       return out;
   }
 
@@ -69,10 +69,10 @@ char *  drawHijriyah(){
   return lockBuff;
 }
 
-char *  TEXTRUN(){
-  static char  text[]="TPQ AS-SA'ADAH Gampang-Prambon";
+char *  DATE(){
+  static char  text[]="   TPQ AS-SA'ADAH Gampang-Prambon";
   static char lockBuff[200]; 
-  sprintf(lockBuff, "%s | %s %s | %02d-%s-%04d | %02d-%s-%dH\0          ", text ,daysOfTheWeek[daynow-1],pasar[jumlahhari()%5],now.day(),bulanN[now.month()-1],now.year(),nowH.hD,mounthJawa[nowH.hM-1],nowH.hY);
+  sprintf(lockBuff, "%s %02d-%s-%04d  %02d-%s-%dH\0",daysOfTheWeek[daynow-1],now.day(),bulanN[now.month()-1],now.year(),nowH.hD,mounthJawa[nowH.hM-1],nowH.hY);
   return lockBuff;
 }
 

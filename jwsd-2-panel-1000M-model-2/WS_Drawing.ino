@@ -2,7 +2,7 @@
 // Drawing Content Block====================    
 // =========================================
 void showJam(int DrawAdd){
-  if(!dwDo(DrawAdd)) return;
+ // if(!dwDo(DrawAdd)) return;
   char jam[20];
   char menit[20];
   int detik =now.second();
@@ -15,7 +15,7 @@ void showJam(int DrawAdd){
   Disp.drawText(19,0,menit);
   Disp.drawText(13,0,buff);
   //dwCtr(0,0,Buff);
-   DoSwap = true;
+ //  DoSwap = true;
    
 }
 
@@ -346,7 +346,7 @@ void dwMrq(const char* msg, int Speed, int dDT, int DrawAdd) //running teks ada 
         DoSwap = true; 
       }          
   }
-  
+ /* 
 void mode_1(int Speed,int DrawAdd)
 {
      // check RunSelector
@@ -600,6 +600,134 @@ Serial.println(String() + "fulllscroll:" + fullScroll);
 Serial.println(String() + "x:" + x);
         }
    }
+*/
+void mode_5(int Speed,int DrawAdd)
+{
+      // check RunSelector
+    static uint16_t   xDate; 
+    static uint16_t   xInfo;  if(!dwDo(DrawAdd)) return;
+    if (reset_x !=0) { xDate=0; xInfo=0; reset_x = 0;} 
+     static uint32_t   lsTmr;
+        uint16_t          Tmr1 = millis();
+    char *msgDate =  DATE();
+    char *msgInfo = drawNama();
+  char jam[20];
+  char menit[20];
+  char titik[10];
+  const char Buff[50];
+  static bool state1;
+  sprintf(Buff,"%-34s"," ");
+  sprintf(jam,"%02d",now.hour());
+  sprintf(menit,"%02d",now.minute());
+  if((Tmr1-lsTmr)>500){lsTmr=Tmr1;  state1=!state1; }
+  if(state1){sprintf(titik,"%s",":");}
+  else{sprintf(titik,"%s"," ");}
+       
+        int batas = Disp.textWidth(Buff);
+        fType(1);
+        int fullScrollD = Disp.textWidth(msgDate) + DWidth  ;
+        int fullScrollI = Disp.textWidth(msgInfo) + DWidth  ;
+        static uint32_t   lsRn;
+        static uint32_t   lsRn1;
+        uint16_t          Tmr = millis();
+       if((Tmr-lsRn)> Speed)
+        { lsRn=Tmr;
+          if (xDate < fullScrollD) {++xDate;}
+          else {  dwDone(DrawAdd); 
+                xDate = 0;return;}
+         if (xInfo < fullScrollI) {++xInfo;}
+          else {  dwDone(DrawAdd); 
+                xInfo = 0;return;}
+    
+      Disp.drawText(DWidth - xDate, 0, msgDate);
+     Disp.drawText(DWidth - xInfo, 9, msgInfo);
+    // Disp.drawText(35,0,masehi());
+     fType(3);
+     Disp.drawText(0,0,Buff);
+     Disp.drawText(0,0,jam);
+     Disp.drawText(19,0,menit);
+     Disp.drawText(13,0,titik);
+     Disp.drawLine(33,0,33,17);
+     Disp.drawLine(33,7,93,7);
+     DoSwap = true;
+        } 
+       
+}
+/*
+void mode_6(int Speed,int DrawAdd)
+{
+      // check RunSelector
+    static uint16_t   xDate; 
+    static uint16_t   xInfo; 
+   if(!dwDo(DrawAdd)) return;
+    if (reset_x !=0) { xDate=0; xInfo=0; reset_x = 0;} 
+     static uint32_t   lsTmr;
+        uint16_t          Tmr1 = millis();
+    char *msgDate =  DATE();
+    char *msgInfo = drawNama();
+  char jam[20];
+  char menit[20];
+  char titik[10];
+  const char Buff[50];
+  static bool state1;
+  sprintf(Buff,"%-34s"," ");
+  sprintf(jam,"%02d",now.hour());
+  sprintf(menit,"%02d",now.minute());
+  if((Tmr1-lsTmr)>500){lsTmr=Tmr1;  state1=!state1; }
+  if(state1){sprintf(titik,"%s",":");}
+  else{sprintf(titik,"%s"," ");}
+       static uint32_t   lsRn;
+        static uint32_t   lsRn1;
+        uint16_t          Tmr = millis();
+        int batas = Disp.textWidth(Buff);
+        fType(1);
+        int fullScrollD = Disp.textWidth(msgDate) + DWidth  ;
+        int fullScrollI = Disp.textWidth(msgInfo) + DWidth  ;
+      /* if((Tmr-lsRn)> Speed)
+        { lsRn=Tmr;
+          if (xDate < fullScrollD) {++xDate;}
+          else {  //dwDone(DrawAdd); 
+                xDate = 0;return;}
+         if (xInfo < fullScrollI) {++xInfo;}
+          else {  //dwDone(DrawAdd); 
+                xInfo = 0;return;}
+    
+   //   Disp.drawText(DWidth - xDate, 0, msgDate);
+     Disp.drawText(DWidth - xInfo, 9, msgInfo);
+    // Disp.drawText(35,0,masehi());
+     fType(3);
+     Disp.drawText(0,0,Buff);
+     Disp.drawText(0,0,jam);
+     Disp.drawText(19,0,menit);
+     Disp.drawText(13,0,titik);
+     Disp.drawLine(33,0,33,17);
+     Disp.drawLine(33,7,93,7);
+     DoSwap = true;
+        } 
+
+         if((Tmr-lsRn1)> 30)
+        { lsRn1=Tmr;
+          if (xDate < fullScrollD) {++xDate;}
+          else {  //dwDone(DrawAdd); 
+                xDate = 0;return;}
+//         if (xInfo < fullScrollI) {++xInfo;}
+//          else {  //dwDone(DrawAdd); 
+//                xInfo = 0;return;}
+    
+      Disp.drawText(DWidth - xDate, 0, msgDate);
+    // Disp.drawText(DWidth - xInfo, 9, msgInfo);
+    // Disp.drawText(35,0,masehi());
+     fType(3);
+     Disp.drawText(0,0,Buff);
+     Disp.drawText(0,0,jam);
+     Disp.drawText(19,0,menit);
+     Disp.drawText(13,0,titik);
+     Disp.drawLine(33,0,33,17);
+     Disp.drawLine(33,7,93,7);
+     DoSwap = true;
+        } 
+}
+*/
 // =========================================
 // Drawing Tools============================
 // =========================================
