@@ -601,47 +601,51 @@ Serial.println(String() + "x:" + x);
         }
    }
 */
-void mode_5(int Speed,int DrawAdd)
+void runText(char *msgDate,char *msgInfo,int Speed_1,int Speed_2,int DrawAdd)
 {
-      // check RunSelector
+     // check RunSelector
+     if(!dwDo(DrawAdd)) return;   
+    static uint8_t    banding;
     static uint16_t   xDate; 
-    static uint16_t   xInfo;  if(!dwDo(DrawAdd)) return;
+    static uint16_t   xInfo;  
     if (reset_x !=0) { xDate=0; xInfo=0; reset_x = 0;} 
-     static uint32_t   lsTmr;
-        uint16_t          Tmr1 = millis();
-    char *msgDate =  DATE();
-    char *msgInfo = drawNama();
-  char jam[20];
-  char menit[20];
-  char titik[10];
-  const char Buff[50];
-  static bool state1;
+    static uint32_t   lsTmr;
+    static uint32_t   lsText_1;
+    static uint32_t   lsText_2;
+    uint32_t          Tmr = millis(); 
+   char jam[10];
+   char menit[10];
+   char titik[10];
+   const char Buff[50];
+   static bool state1;
+  
   sprintf(Buff,"%-34s"," ");
   sprintf(jam,"%02d",now.hour());
   sprintf(menit,"%02d",now.minute());
-  if((Tmr1-lsTmr)>500){lsTmr=Tmr1;  state1=!state1; }
+  
+  if((Tmr-lsTmr)>500){lsTmr=Tmr;  state1=!state1; }
   if(state1){sprintf(titik,"%s",":");}
   else{sprintf(titik,"%s"," ");}
-       
-        int batas = Disp.textWidth(Buff);
+  
         fType(1);
-        int fullScrollD = Disp.textWidth(msgDate) + DWidth  ;
-        int fullScrollI = Disp.textWidth(msgInfo) + DWidth  ;
-        static uint32_t   lsRn;
-        static uint32_t   lsRn1;
-        uint16_t          Tmr = millis();
-       if((Tmr-lsRn)> Speed)
-        { lsRn=Tmr;
-          if (xDate < fullScrollD) {++xDate;}
-          else {  dwDone(DrawAdd); 
-                xDate = 0;return;}
-         if (xInfo < fullScrollI) {++xInfo;}
-          else {  dwDone(DrawAdd); 
-                xInfo = 0;return;}
-    
-      Disp.drawText(DWidth - xDate, 0, msgDate);
+        int fullScrollDat = Disp.textWidth(msgDate) + DWidth  ;
+        int fullScrollInf = Disp.textWidth(msgInfo) + DWidth  ;
+        
+       if((Tmr-lsText_1)> Speed_1)
+        { lsText_1=Tmr;
+          if (xDate < fullScrollDat) {++xDate;}
+          else {xDate = 0;return;}
+        }
+
+        if((Tmr-lsText_2)> Speed_2)
+        { lsText_2=Tmr;
+          if (xInfo < fullScrollInf) {++xInfo;}
+        else { xInfo = 0;return;}
+        }
+  //   banding = max(xDate,xInfo);
+    // if(xInfo >= fullScrollInf && xDate >= fullScrollDat ){dwDone(DrawAdd); xDate = 0; xInfo = 0;return; }
+     Disp.drawText(DWidth - xDate, 0, msgDate);
      Disp.drawText(DWidth - xInfo, 9, msgInfo);
-    // Disp.drawText(35,0,masehi());
      fType(3);
      Disp.drawText(0,0,Buff);
      Disp.drawText(0,0,jam);
@@ -650,9 +654,10 @@ void mode_5(int Speed,int DrawAdd)
      Disp.drawLine(33,0,33,17);
      Disp.drawLine(33,7,93,7);
      DoSwap = true;
-        } 
+   
        
 }
+
 /*
 void mode_6(int Speed,int DrawAdd)
 {

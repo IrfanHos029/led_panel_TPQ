@@ -31,7 +31,7 @@ char * jamUtama()
  
  char*drawNama()
   {    fType(3);
-      static char  out[150]="TPQ AS-SA'ADAH Gampang,Prambon,Sidoarjo";
+      static char  out[]="TPQ AS-SA'ADAH Gampang,Prambon,Sidoarjo";
       return out;
   }
 

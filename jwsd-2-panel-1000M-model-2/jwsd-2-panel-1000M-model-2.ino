@@ -157,7 +157,7 @@ void setup()
 //===MAIN LOOP Function =================   
 //=======================================
 void loop()
-  { //DoSwap  = false ;  
+  { DoSwap  = false ;  
     // Reset & Init Display State
     update_All_data();   //every time
 //    Reset(); //fungsion restart
@@ -173,111 +173,9 @@ void loop()
 //   mode_6(70,1);
  //   mode_3(30,1);
 //    mode_4(40,1);
-  // runText(40,10);
+ runText(DATE(),drawNama(),30,30,1);
  //  runTEXT(35,1);
 /////////////////////
-
-int Speed=30;
-
-    // check RunSelector
-    static uint16_t   xDate; 
-    static uint16_t   xInfo; 
-  // if(!dwDo(DrawAdd)) return;
-    if (reset_x !=0) { xDate=0; xInfo=0; reset_x = 0;} 
-     static uint32_t   lsTmr;
-        uint16_t          Tmr1 = millis();
-    char *msgDate =  DATE();
-    char *msgInfo = drawNama();
-  char jam[20];
-  char menit[20];
-  char titik[10];
-  const char Buff[50];
-  static bool state1;
-  sprintf(Buff,"%-34s"," ");
-  sprintf(jam,"%02d",now.hour());
-  sprintf(menit,"%02d",now.minute());
-  if((Tmr1-lsTmr)>500){lsTmr=Tmr1;  state1=!state1; }
-  if(state1){sprintf(titik,"%s",":");}
-  else{sprintf(titik,"%s"," ");}
-       static uint32_t   lsRn;
-        static uint32_t   lsRn1;
-        uint16_t          Tmr = millis();
-        int batas = Disp.textWidth(Buff);
-        fType(1);
-        int fullScrollD = Disp.textWidth(msgDate) + DWidth  ;
-        int fullScrollI = Disp.textWidth(msgInfo) + DWidth  ;
-
-
-
-
-
-        
-       if((Tmr-lsRn)> 25)
-        { lsRn=Tmr;
-//          if (xDate < fullScrollD) {++xDate;}
-//          else {  //dwDone(DrawAdd); 
-//                xDate = 0;return;}
-         if (xInfo < fullScrollI) {++xInfo;}
-          else {  //dwDone(DrawAdd); 
-                xInfo = 0;return;}
-        }
-
-         if((Tmr1-lsRn1)> 75)
-        { lsRn1=Tmr1;
-          if (xDate < fullScrollD) {++xDate;}
-          else {  //dwDone(DrawAdd); 
-                xDate = 0;return;}
-//         if (xInfo < fullScrollI) {++xInfo;}
-//          else {  //dwDone(DrawAdd); 
-//                xInfo = 0;return;}
-        }
-      Disp.drawText(DWidth - xDate, 0, msgDate);
-    
-     Disp.drawText(DWidth - xInfo, 9, msgInfo);
-    // Disp.drawText(35,0,masehi());
-     fType(3);
-     Disp.drawText(0,0,Buff);
-     Disp.drawText(0,0,jam);
-     Disp.drawText(19,0,menit);
-     Disp.drawText(13,0,titik);
-     Disp.drawLine(33,0,33,17);
-     Disp.drawLine(33,7,93,7);
-
-//     fType(1);
-//     Disp.drawText(0,0,Buff);
-//     Disp.drawText(0,0,jam);
-//     Disp.drawText(19,0,menit);
-//     Disp.drawText(13,0,titik);
-//     Disp.drawLine(33,0,33,17);
-//     Disp.drawLine(33,7,93,7);
-     Disp.swapBuffers();
-/*
-/////////////////////////
-         if((Tmr-lsRn1)> 30)
-        { lsRn1=Tmr;
-          if (xDate < fullScrollD) {++xDate;}
-          else {  //dwDone(DrawAdd); 
-                xDate = 0;return;}
-//         if (xInfo < fullScrollI) {++xInfo;}
-//          else {  //dwDone(DrawAdd); 
-//                xInfo = 0;return;}
-    
-      Disp.drawText(DWidth - xDate, 0, msgDate);
-    // Disp.drawText(DWidth - xInfo, 9, msgInfo);
-    // Disp.drawText(35,0,masehi());
-     fType(1);
-     Disp.drawText(0,0,Buff);
-     Disp.drawText(0,0,jam);
-     Disp.drawText(19,0,menit);
-     Disp.drawText(13,0,titik);
-     Disp.drawLine(33,0,33,17);
-     Disp.drawLine(33,7,93,7);
-     Disp.swapBuffers();
-        }
-  
-//Disp.swapBuffers();
-
-*/
 
 /////////////////////
 
