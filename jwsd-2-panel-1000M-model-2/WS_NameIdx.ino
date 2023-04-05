@@ -1,4 +1,4 @@
-
+/*
 char * jamUtama()
 {   //Disp.setFont(Font3);
      static char Buff[20];
@@ -6,14 +6,6 @@ char * jamUtama()
    return Buff;
 }
 
-//char * MonthName(int number)  // get  Month Name from EEPROM
-//    {
-//      static  char  locBuff[4];
-//      sprintf (locBuff,"s" ,bulanN[number]);
-//      return locBuff ;
-//    }
-
-    
  char * masehi()
  {
   static  char  lockBuff [10];
@@ -28,13 +20,21 @@ char * jamUtama()
   sprintf (lockBuff ,"%s %s" ,daysOfTheWeek[daynow-1],pasar[jumlahhari()%5]);
   return  lockBuff ;
  }
- 
+ */
  char*drawNama()
   {    fType(3);
       static char  out[]="TPQ AS-SA'ADAH Gampang,Prambon,Sidoarjo";
       return out;
   }
-
+/*
+ * 
+char* sholatN(int number) // get sholat name from EEPROM
+    {
+      static char  locBuff[8];
+      sprintf(locBuff,"%s" ,sholatCall[number]);
+      return locBuff;
+    }
+ 
 char *  drawMode_1(){
   static char  text[]="TPQ AS-SA'ADAH Gampang-Prambon";
   static char lockBuff[150];
@@ -68,18 +68,10 @@ char *  drawHijriyah(){
   sprintf(lockBuff, "  %s %s %02d %s %dH\0     ",daysOfTheWeek[daynow-1],pasar[jumlahhari()%5],nowH.hD,mounthJawa[nowH.hM-1],nowH.hY);
   return lockBuff;
 }
-
+*/
 char *  DATE(){
   static char  text[]="   TPQ AS-SA'ADAH Gampang-Prambon";
   static char lockBuff[200]; 
   sprintf(lockBuff, "%s %02d-%s-%04d  %02d-%s-%dH\0",daysOfTheWeek[daynow-1],now.day(),bulanN[now.month()-1],now.year(),nowH.hD,mounthJawa[nowH.hM-1],nowH.hY);
   return lockBuff;
 }
-
-char* sholatN(int number) // get sholat name from EEPROM
-    {
-      static char  locBuff[8];
-      sprintf(locBuff,"%s" ,sholatCall[number]);
-      return locBuff;
-    }
- 

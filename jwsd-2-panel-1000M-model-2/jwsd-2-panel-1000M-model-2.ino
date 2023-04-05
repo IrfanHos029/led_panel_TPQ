@@ -65,7 +65,7 @@ char *bulanN[]= {"Januari","Februari","Maret","April","Mei","Juni","Juli","Agust
 int maxday[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 RTClib          RTC;
 DS3231          Clock;
-
+/*
 //Structure of Variable 
 typedef struct  // loaded to EEPROM
   {
@@ -95,7 +95,7 @@ typedef struct  // loaded to EEPROM
     int8_t  IA;      //24 1 byte  add 35
     int8_t  IM;      //25 1 byte  add 36
   } struct_param;
-
+*/
 typedef struct  
   { 
     uint8_t   hD;
@@ -105,7 +105,7 @@ typedef struct
 
    
 // Variable by Structure     
-struct_param    Prm;
+//struct_param    Prm;
 hijir_date      nowH;   
 
 // Time Variable
@@ -132,7 +132,15 @@ int         RunSel    = 1; //
 int         RunFinish = 0 ;
 const byte reset = 4;
 bool trigg;
-
+unsigned long   lsTmr;
+     unsigned long   lsYClock;
+     int   xDate=0; 
+     int   xInfo=0;  
+     unsigned long lsText_1=0;
+     unsigned long lsText_2=0;
+      bool state1;
+      int xLine ; //DWidth/2;
+      int Dwidth = DWidth - 33;
 //=======================================
 //===SETUP=============================== 
 //=======================================
@@ -143,11 +151,14 @@ void setup()
     digitalWrite(reset,HIGH);
      pinMode(reset,OUTPUT);
      pinMode(BUZZ, OUTPUT); 
-         
-    // Get Saved Parameter from EEPROM   
+     delay(1000);
+    for(int i = 0; i < 2; i++){
+      digitalWrite(BUZZ,HIGH); 
+      delay(100);
+      digitalWrite(BUZZ,LOW);
+      delay(100);
+    }
     updateTime();
-//    GetPrm();
-    //SendPrm();
 
     //init P10 Led Disp & Salam
     Disp_init();
@@ -157,32 +168,85 @@ void setup()
 //===MAIN LOOP Function =================   
 //=======================================
 void loop()
-  { DoSwap  = false ;  
-    // Reset & Init Display State
+  {
     update_All_data();   //every time
-//    Reset(); //fungsion restart
-  //  
-    Disp.clear();
+
+  char *msgDate = DATE();
+  char *msgInfo = drawNama();
+  int Speed_1 = 30;
+  int Speed_2 = 30;
+  Disp.clear();
   
+  static uint8_t    yClock;
+  static uint8_t    s;
+  if (reset_x !=0) { xDate=0; xInfo=0; reset_x = 0;} 
+  char jam[10];
+  char menit[10];
+  char titik[10];
+  const char Buff[50];
+ 
+  
+  sprintf(Buff,"%-34s"," ");
+  sprintf(jam,"%02d",now.hour());
+  sprintf(menit,"%02d",now.minute());
+  
+  if((millis()-lsYClock)>100) 
+    { 
+      if(s==0 and yClock<9){ lsYClock=millis();    yClock++;}
+      if(xLine < (Dwidth/2)){lsYClock=millis();    xLine++; }
+    }
+  if(xLine==Dwidth/2){s=1; lsYClock=0;}
+  
+   fType(1);
+   int fullScrollDat = Disp.textWidth(msgDate) + DWidth  ;
+   int fullScrollInf = Disp.textWidth(msgInfo) + DWidth  ;
+        
+   if((millis()-lsText_1)> Speed_1 && s == 1)
+      { 
+          if (xDate < fullScrollDat) {lsText_1=millis(); ++xDate; }
+         // else {xDate = 0;return;}     
+      }
+
+   if((millis()-lsText_2)> Speed_2 && s == 1)
+      {
+         if (xInfo < fullScrollInf) {lsText_2=millis(); ++xInfo; }
+        // else { xInfo = 0;return;}    
+       }
+
+     if((millis()-lsTmr)>500){lsTmr=millis();  state1=!state1; 
+     if(state1){sprintf(titik,"%s",":");}
+     else{sprintf(titik,"%s"," ");}}
+     
+Serial.println(String() + "xDate:" + xDate);
+Serial.println(String() + "xInfo:" + xInfo);
+
+  //   banding = max(xDate,xInfo);
+      if(xInfo >= fullScrollInf && xDate >= fullScrollDat ){xDate = 0; xInfo = 0;return; }
+    
+     Disp.drawText(DWidth - xDate, 0, msgDate);
+     Disp.drawText(DWidth - xInfo, 9, msgInfo);
+     fType(3);
+     
+     Disp.drawText(0,0,Buff);
+     Disp.drawText(0,yClock-9,jam);
+     Disp.drawText(19,yClock-9,menit);
+     Disp.drawText(13,yClock-9,titik);
+     Disp.drawLine(33,8,33,8-yClock);
+      Disp.drawLine(33,8,33,8+yClock);
+     Disp.drawLine((Dwidth/2)+33,7,(Dwidth/2+33)+xLine,7);
+     Disp.drawLine((Dwidth/2)+33,7,(Dwidth/2+33)-xLine,7);
+     Disp.swapBuffers();
+   
     // =========================================
     // List of Display Component Block =========
     // =========================================
 
-//   mode_1(30,1);
- // mode_5(45,1);
-//   mode_6(70,1);
- //   mode_3(30,1);
-//    mode_4(40,1);
- runText(DATE(),drawNama(),30,30,1);
- //  runTEXT(35,1);
-/////////////////////
-
-/////////////////////
+ //runText(DATE(),drawNama(),40,40,1);
 
     // =========================================
     // Display Control Block ===================
     // =========================================
-    if(RunFinish==1) {RunSel = 1; RunFinish =0;}                      //after anim 1 set anim 2
+ //   if(RunFinish==1) {RunSel = 1; RunFinish =0;}                      //after anim 1 set anim 2
    // if(RunFinish==2) {RunSel = 1; RunFinish =0;}                      //after anim 2 set anim 3
 //    if(RunFinish==3) {RunSel = 1; RunFinish =0;}
 //    if(RunFinish==4)  {RunSel = 1;  RunFinish =0;} 
@@ -191,16 +255,14 @@ void loop()
     // Swap Display if Change===================
     // =========================================
     
-    if(DoSwap){Disp.swapBuffers();} // Swap Buffer if Change
+   // if(DoSwap){Disp.swapBuffers();} // Swap Buffer if Change
   }
-
-
 // =========================================
 // DMD3 P10 utility Function================
 // =========================================
 void Disp_init() 
   { Disp.setDoubleBuffer(true);
-    Timer1.initialize(500);
+    Timer1.initialize(2500);
     Timer1.attachInterrupt(scan);
     setBrightness(100);
     fType(1);  
@@ -240,34 +302,10 @@ void update_All_data()
   {
   uint8_t   date_cor = 0;
   updateTime();
-  sholatCal();                                                // load Sholah Time                                         // check jadwal Puasa Besok
-  if(floatnow>sholatT[6]) {date_cor = 1;}                     // load Hijr Date + corection next day after Mhagrib 
+  //sholatCal();                                                // load Sholah Time                                         // check jadwal Puasa Besok
+  if(floatnow>18.00) {date_cor = 1;}                     // load Hijr Date + corection next day after Mhagrib 
   nowH = toHijri(now.year(),now.month(),now.day(),date_cor);  // load Hijir Date
   
-  if ((floatnow > (float)21) or (floatnow < (float)3.5) )    {setBrightness(15);}
-      else                                                   {setBrightness(Prm.BL);}  
+//  if ((floatnow > (float)21) or (floatnow < (float)3.5) )    {setBrightness(15);}
+//      else                                                   {setBrightness(Prm.BL);}  
   }
-  
-    
-void check_azzan()
-  { //Check Waktu Sholat
-    SholatNow  = -1;
-    for(int i=0; i <=7; i++)
-      {
-        if (i!=0 and i!=2 and i!=3)  // bukan terbit dan bukan dhuha
-          {
-            if(floatnow >= sholatT[i])
-              {
-                SholatNow = i;
-                if(!azzan and (floatnow > sholatT[i]) and (floatnow < (sholatT[i]+0.03))) 
-                  { 
-                    if(daynow ==6 and SholatNow ==4 and Prm.MT==1) {jumat=true;}
-                    azzan =true;
-                    RunSel = 100;
-                  }  
-              }
-          }
-      }
-  }
-
- 

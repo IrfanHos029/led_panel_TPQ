@@ -1,7 +1,9 @@
 //------------------------------------------
 // Function calculate Pray Time
 //------------------------------------------
+ const float lunarY          = 354.367068f;
 /*Macro Function */
+/*
 #define d2r(x) x*M_PI/180
 #define r2d(x) x*180/M_PI
 
@@ -123,7 +125,7 @@ float fix_angle(float a)
     a = a < 0.0 ? a + 360.0 : a;
     return a;
   }  
-
+*/
 
 
 
@@ -154,8 +156,8 @@ long DaysHijri(uint16_t Y,uint8_t M,uint8_t D)
 hijir_date toHijri(uint16_t Y, uint8_t M, uint8_t D,uint8_t cor) // core --> corection date today=0   yesterday=-1 tomorrow=1
   {
     hijir_date BuffDate;
-    long nday = Days(Y, M, D)+ Prm.CH + cor;
-    
+    long nday = Days(Y, M, D)+  cor;
+//    Serial.println(String() + "data:" + Prm.CH);
     long tahun = floor(nday/lunarY) + 1420;
     long bulan = 1;
     long harike = 1;
