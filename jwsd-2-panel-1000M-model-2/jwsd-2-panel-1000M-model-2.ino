@@ -178,10 +178,12 @@ void setup()
 //=======================================
 void loop()
   {
+    
+    setBright(Bright);
       update_All_data();   //every time
     Indikator(500);
     cekInput();
- 
+ /*
   char *msgDate = DATE();
   String msgInfo = text;
   int Speed_1 = 30;
@@ -248,7 +250,7 @@ void loop()
      Disp.drawLine((Dwidth/2)+33,7,(Dwidth/2+33)-xLine,7);
      Disp.swapBuffers();
 
-
+*/
 
 
     if (stringComplete) 
@@ -265,7 +267,7 @@ void loop()
      {
       inputString.remove(0,2);
       Bright = inputString.toInt();
-      setBrightness(Bright);
+     setBrightness(Bright);
       Serial.println(String() + "Bright:" + Bright);
       inputString = "";
       stringComplete = false;
