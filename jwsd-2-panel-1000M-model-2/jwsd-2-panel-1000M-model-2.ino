@@ -67,7 +67,7 @@ int maxday[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 RTClib          RTC;
 DS3231          Clock;
 
-String text="";
+char text[50];
 /*
 //Structure of Variable 
 typedef struct  // loaded to EEPROM
@@ -155,7 +155,7 @@ unsigned long   lsTmr;
 void setup()
   { //init comunications 
     Wire.begin();
-    Serial.begin(115200);
+    Serial.begin(9600);
     pinMode(Ind,OUTPUT);
     pinMode(BUZZ, OUTPUT); 
     digitalWrite(Ind,HIGH);
@@ -179,104 +179,61 @@ void setup()
 //===MAIN LOOP Function =================   
 //=======================================
 void loop()
-  {
-    
-   // setBright(Bright);
-  // setClockk();
-      update_All_data();   //every time
+{
+    update_All_data();   //every time
     Indikator(500);
-    cekInput();
-   // if(Screen == 0){Disp.clear(); dwCtr(10,9,"TEST"); Disp.swapBuffers();}
- 
-   if(Screen == 0){
-  char *msgDate = DATE();
-  String msgInfo = text;
-  int Speed_1 = 30;
-  int Speed_2 = 30;
-  Disp.clear();
-  
-  static uint8_t    yClock;
-  static uint8_t    s;
-  if (reset_x !=0) { xDate=0; xInfo=0; reset_x = 0;} 
-  char jam[10];
-  char menit[10];
-  char titik[10];
-  const char Buff[50];
- 
-  //Serial.println(text);
-  sprintf(Buff,"%-34s"," ");
-  sprintf(jam,"%02d",now.hour());
-  sprintf(menit,"%02d",now.minute());
-  
-  if((millis()-lsYClock)>100) 
-    { 
-      if(s==0 and yClock<9){ lsYClock=millis();    yClock++;}
-      if(xLine < (Dwidth/2)){lsYClock=millis();    xLine++; }
-    }
-  if(xLine==Dwidth/2){s=1; lsYClock=0;}
-  
-   fType(1);
-   int fullScrollDat = Disp.textWidth(msgDate) + DWidth  ;
-   int fullScrollInf = Disp.textWidth(msgInfo) + DWidth  ;
-        
-   if((millis()-lsText_1)> Speed_1 && s == 1)
-      { 
-          if (xDate < fullScrollDat) {lsText_1=millis(); ++xDate; }
-         // else {xDate = 0;return;}     
-      }
-
-   if((millis()-lsText_2)> Speed_2 && s == 1)
-      {
-         if (xInfo < fullScrollInf) {lsText_2=millis(); ++xInfo; }
-        // else { xInfo = 0;return;}    
-       }
-
-     if((millis()-lsTmr)>500){lsTmr=millis();  state1=!state1; 
-     if(state1){sprintf(titik,"%s",":");}
-     else{sprintf(titik,"%s"," ");}}
-     
-//Serial.println(String() + "xDate:" + xDate);
-//Serial.println(String() + "xInfo:" + xInfo);
-
-  //   banding = max(xDate,xInfo);
-      if(xInfo >= fullScrollInf && xDate >= fullScrollDat ){xDate = 0; xInfo = 0;return; }
-    
-     Disp.drawText(DWidth - xDate, 0, msgDate);
-     Disp.drawText(DWidth - xInfo, 9, msgInfo);
-     fType(3);
-     
-     Disp.drawText(0,0,Buff);
-     Disp.drawText(0,yClock-9,jam);
-     Disp.drawText(19,yClock-9,menit);
-     Disp.drawText(13,yClock-9,titik);
-     Disp.drawLine(33,8,33,8-yClock);
-      Disp.drawLine(33,8,33,8+yClock);
-     Disp.drawLine((Dwidth/2)+33,7,(Dwidth/2+33)+xLine,7);
-     Disp.drawLine((Dwidth/2)+33,7,(Dwidth/2+33)-xLine,7);
-     Disp.swapBuffers();
+   
+if(Screen == 0)
+{
+     cekInput();
+     //showPanel(1);
 }
 
-else if(Screen == 1)
+if(Screen == 1)
 {
- setBright(Bright);
+   cekInput();
+   showPanel(0);
+   setBright(Bright);
    
 }
 
-else if(Screen == 2)
+if(Screen == 2)
 {
-   setClockk();
+  cekInput();
+  showPanel(0);
+  setClockk();
 }
 
 
-    if (stringComplete) 
+ if (stringComplete) 
+ {
+   if(inputString.substring(0,2) == "S1")
    {
-    Serial.println(String() + "inputString:" + inputString);
-    Serial.println(String() + "Screen:" + Screen);
-    if (inputString.substring(0,2) == "TX") 
+      Disp.clear(); 
+      inputString = "";
+      Screen = 1;
+      stringComplete = false;
+   }
+
+     else if(inputString.substring(0,2) == "S2")
     {
+      Disp.clear(); 
+      inputString = "";
+      Screen = 2;
+      stringComplete = false;
+    }
+
+    else if(inputString.substring(0,2) == "EX")
+    {
+      Disp.clear(); 
+      inputString = "";
+      Screen = 0;
+      stringComplete = false;
+    }
+     else if(inputString.substring(0,2) == "TX")
+     {
       inputString.remove(0,2);
-      text = inputString;
-      Serial.println(String() + "text:" + text);
+      inputString.toCharArray(text,50);
       inputString = "";
       stringComplete = false;
     }
@@ -284,8 +241,7 @@ else if(Screen == 2)
      {
       inputString.remove(0,2);
       Bright = inputString.toInt();
-     setBrightness(Bright);
-      Serial.println(String() + "Bright:" + Bright);
+      setBrightness(Bright);
       inputString = "";
       stringComplete = false;
     }
@@ -295,43 +251,19 @@ else if(Screen == 2)
       String setJam,setMenit;
       
       inputString.remove(0,2);
-      Serial.println(String() + "inputString:" + inputString);
-     
       setJam = inputString.substring(0,2);    
       setMenit = inputString.substring(3,5);
       setHours = setJam.toInt();
       setMinutes = setMenit.toInt();
-      Serial.println(String() + "setJam:" + setHours);
-      Serial.println(String() + "setMenit:" + setMinutes);
       inputString = "";
       stringComplete = false;
     }
 
-    else if(inputString.substring(0,2) == "S1")
+    else
     {
-       Disp.clear(); 
-      inputString = "";
-      Screen = 1;
-      stringComplete = false;
+       inputString="";
     }
-
-    else if(inputString.substring(0,2) == "S2")
-    {
-       Disp.clear(); 
-      inputString = "";
-      Screen = 2;
-      stringComplete = false;
-    }
-
-    else if(inputString.substring(0,2) == "EX")
-    {
-       Disp.clear(); 
-      inputString = "";
-      Screen = 0;
-      stringComplete = false;
-    }
-
-   }
+}
    
     // =========================================
     // List of Display Component Block =========
@@ -383,7 +315,8 @@ void updateTime()
   }
   
 void cekInput() 
-{
+{ // Serial.println(String() + "cekInput");
+  if(Serial.available() == 0 && Screen != 1 && Screen != 2){ showPanel(1); }
   if (Serial.available() > 0 ) 
   {
     // get the new byte:
@@ -394,8 +327,7 @@ void cekInput()
     {
       stringComplete = true;
     }
-  }
-   
+  } 
 }
 
 

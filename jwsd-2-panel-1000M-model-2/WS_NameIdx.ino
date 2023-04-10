@@ -21,8 +21,8 @@ char * jamUtama()
   return  lockBuff ;
  }
  */
-// char drawNama(char text="   TPQ AS-SA'ADAH Gampang-Prambon")
-//  {   char Buff[200];
+// char *drawInfo()
+//  {   static char Buff[50];
 //      sprintf(Buff,"%s" ,text);
 //      return Buff;
 //  }
