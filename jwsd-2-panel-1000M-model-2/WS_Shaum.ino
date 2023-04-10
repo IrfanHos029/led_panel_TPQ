@@ -26,6 +26,18 @@ void setBright(int conBright)
 }
 
 
+void setClockk(){
+  Disp.clear(); 
+ char out[10];
+ // fType(3);
+  dwCtr(16,0,"SET CLOCK");
+
+  //sprintf(out," %02d : %02d : %04d " ,now.hour(),now.minute(),now.second());
+  sprintf(out," %02d : %02d : %02d " ,setHours,setMinutes,now.second());
+  dwCtr(10,9,out);
+  Disp.swapBuffers();
+}
+
 
 
 

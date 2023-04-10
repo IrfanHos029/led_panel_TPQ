@@ -147,6 +147,8 @@ unsigned long   lsTmr;
       String inputString="";
       bool stringComplete = false;
       int Bright = 10;
+      int setHours,setMinutes;
+      int Screen=0;
 //=======================================
 //===SETUP=============================== 
 //=======================================
@@ -179,11 +181,14 @@ void setup()
 void loop()
   {
     
-    setBright(Bright);
+   // setBright(Bright);
+  // setClockk();
       update_All_data();   //every time
     Indikator(500);
     cekInput();
- /*
+   // if(Screen == 0){Disp.clear(); dwCtr(10,9,"TEST"); Disp.swapBuffers();}
+ 
+   if(Screen == 0){
   char *msgDate = DATE();
   String msgInfo = text;
   int Speed_1 = 30;
@@ -249,12 +254,24 @@ void loop()
      Disp.drawLine((Dwidth/2)+33,7,(Dwidth/2+33)+xLine,7);
      Disp.drawLine((Dwidth/2)+33,7,(Dwidth/2+33)-xLine,7);
      Disp.swapBuffers();
+}
 
-*/
+else if(Screen == 1)
+{
+ setBright(Bright);
+   
+}
+
+else if(Screen == 2)
+{
+   setClockk();
+}
 
 
     if (stringComplete) 
    {
+    Serial.println(String() + "inputString:" + inputString);
+    Serial.println(String() + "Screen:" + Screen);
     if (inputString.substring(0,2) == "TX") 
     {
       inputString.remove(0,2);
@@ -263,7 +280,7 @@ void loop()
       inputString = "";
       stringComplete = false;
     }
-     if(inputString.substring(0,2) == "BT")
+    else if(inputString.substring(0,2) == "BT")
      {
       inputString.remove(0,2);
       Bright = inputString.toInt();
@@ -275,8 +292,45 @@ void loop()
 
     else if(inputString.substring(0,2) == "CK")
     {
+      String setJam,setMenit;
+      
+      inputString.remove(0,2);
+      Serial.println(String() + "inputString:" + inputString);
+     
+      setJam = inputString.substring(0,2);    
+      setMenit = inputString.substring(3,5);
+      setHours = setJam.toInt();
+      setMinutes = setMenit.toInt();
+      Serial.println(String() + "setJam:" + setHours);
+      Serial.println(String() + "setMenit:" + setMinutes);
+      inputString = "";
       stringComplete = false;
     }
+
+    else if(inputString.substring(0,2) == "S1")
+    {
+       Disp.clear(); 
+      inputString = "";
+      Screen = 1;
+      stringComplete = false;
+    }
+
+    else if(inputString.substring(0,2) == "S2")
+    {
+       Disp.clear(); 
+      inputString = "";
+      Screen = 2;
+      stringComplete = false;
+    }
+
+    else if(inputString.substring(0,2) == "EX")
+    {
+       Disp.clear(); 
+      inputString = "";
+      Screen = 0;
+      stringComplete = false;
+    }
+
    }
    
     // =========================================
