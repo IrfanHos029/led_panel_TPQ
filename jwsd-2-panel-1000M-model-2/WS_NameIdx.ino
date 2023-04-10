@@ -21,11 +21,11 @@ char * jamUtama()
   return  lockBuff ;
  }
  */
- char*drawNama()
-  {    fType(3);
-      static char  out[]="TPQ AS-SA'ADAH Gampang,Prambon,Sidoarjo";
-      return out;
-  }
+// char drawNama(char text="   TPQ AS-SA'ADAH Gampang-Prambon")
+//  {   char Buff[200];
+//      sprintf(Buff,"%s" ,text);
+//      return Buff;
+//  }
 /*
  * 
 char* sholatN(int number) // get sholat name from EEPROM
@@ -70,7 +70,7 @@ char *  drawHijriyah(){
 }
 */
 char *  DATE(){
-  static char  text[]="   TPQ AS-SA'ADAH Gampang-Prambon";
+  // char  text[20];
   static char lockBuff[200]; 
   sprintf(lockBuff, "%s %02d-%s-%04d  %02d-%s-%dH\0",daysOfTheWeek[daynow-1],now.day(),bulanN[now.month()-1],now.year(),nowH.hD,mounthJawa[nowH.hM-1],nowH.hY);
   return lockBuff;

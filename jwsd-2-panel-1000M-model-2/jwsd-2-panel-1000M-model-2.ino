@@ -19,6 +19,7 @@ JAM_DIGITAL_MODIF 64 X 16
 #include <MemoryFree.h>
 
 #define BUZZ    2 
+#define Ind     3
 
 #define Font0 Font4x6
 #define Font3 BigNumber
@@ -65,6 +66,8 @@ char *bulanN[]= {"Januari","Februari","Maret","April","Mei","Juni","Juli","Agust
 int maxday[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 RTClib          RTC;
 DS3231          Clock;
+
+String text="";
 /*
 //Structure of Variable 
 typedef struct  // loaded to EEPROM
@@ -141,27 +144,33 @@ unsigned long   lsTmr;
       bool state1;
       int xLine ; //DWidth/2;
       int Dwidth = DWidth - 33;
+      String inputString="";
+      bool stringComplete = false;
+      int Bright = 10;
 //=======================================
 //===SETUP=============================== 
 //=======================================
 void setup()
   { //init comunications 
     Wire.begin();
-    Serial.begin(9600);
-    digitalWrite(reset,HIGH);
-     pinMode(reset,OUTPUT);
-     pinMode(BUZZ, OUTPUT); 
-     delay(1000);
-    for(int i = 0; i < 2; i++){
+    Serial.begin(115200);
+    pinMode(Ind,OUTPUT);
+    pinMode(BUZZ, OUTPUT); 
+    digitalWrite(Ind,HIGH);
+    
+    delay(1000);
+    for(int i = 0; i < 2; i++)
+    {
       digitalWrite(BUZZ,HIGH); 
       delay(100);
       digitalWrite(BUZZ,LOW);
       delay(100);
     }
     updateTime();
-
+    inputString.reserve(200);
     //init P10 Led Disp & Salam
     Disp_init();
+   // text= "TPQ AS-SA'ADAH Gampang-Prambon";
   }
 
 //=======================================
@@ -169,10 +178,12 @@ void setup()
 //=======================================
 void loop()
   {
-    update_All_data();   //every time
-
+      update_All_data();   //every time
+    Indikator(500);
+    cekInput();
+ 
   char *msgDate = DATE();
-  char *msgInfo = drawNama();
+  String msgInfo = text;
   int Speed_1 = 30;
   int Speed_2 = 30;
   Disp.clear();
@@ -185,7 +196,7 @@ void loop()
   char titik[10];
   const char Buff[50];
  
-  
+  //Serial.println(text);
   sprintf(Buff,"%-34s"," ");
   sprintf(jam,"%02d",now.hour());
   sprintf(menit,"%02d",now.minute());
@@ -217,8 +228,8 @@ void loop()
      if(state1){sprintf(titik,"%s",":");}
      else{sprintf(titik,"%s"," ");}}
      
-Serial.println(String() + "xDate:" + xDate);
-Serial.println(String() + "xInfo:" + xInfo);
+//Serial.println(String() + "xDate:" + xDate);
+//Serial.println(String() + "xInfo:" + xInfo);
 
   //   banding = max(xDate,xInfo);
       if(xInfo >= fullScrollInf && xDate >= fullScrollDat ){xDate = 0; xInfo = 0;return; }
@@ -236,6 +247,35 @@ Serial.println(String() + "xInfo:" + xInfo);
      Disp.drawLine((Dwidth/2)+33,7,(Dwidth/2+33)+xLine,7);
      Disp.drawLine((Dwidth/2)+33,7,(Dwidth/2+33)-xLine,7);
      Disp.swapBuffers();
+
+
+
+
+    if (stringComplete) 
+   {
+    if (inputString.substring(0,2) == "TX") 
+    {
+      inputString.remove(0,2);
+      text = inputString;
+      Serial.println(String() + "text:" + text);
+      inputString = "";
+      stringComplete = false;
+    }
+     if(inputString.substring(0,2) == "BT")
+     {
+      inputString.remove(0,2);
+      Bright = inputString.toInt();
+      setBrightness(Bright);
+      Serial.println(String() + "Bright:" + Bright);
+      inputString = "";
+      stringComplete = false;
+    }
+
+    else if(inputString.substring(0,2) == "CK")
+    {
+      stringComplete = false;
+    }
+   }
    
     // =========================================
     // List of Display Component Block =========
@@ -264,14 +304,15 @@ void Disp_init()
   { Disp.setDoubleBuffer(true);
     Timer1.initialize(2500);
     Timer1.attachInterrupt(scan);
-    setBrightness(100);
+    setBrightness(Bright);
     fType(1);  
     Disp.clear();
     Disp.swapBuffers();
-    }
+  }
+
 
 void setBrightness(int bright)
-  { Timer1.pwm(9,20);}
+  { Timer1.pwm(9,bright);}
 
 void scan()
   { Disp.refresh();}
@@ -285,19 +326,23 @@ void updateTime()
     daynow   = Clock.getDoW();    // load day Number
   }
   
-/*void Timer_Minute(int repeat_time) //load every  1 minute
-  { 
-    static uint16_t   lsRn;
-    uint16_t          Tmr = millis();
-    if((Tmr-lsRn)>(repeat_time*60000))
-      {
-        lsRn =Tmr;
-        update_All_data();
-        Serial.print("freeMemory()=");Serial.println(freeMemory()); 
-        SendPrm();       
-      }
+void cekInput() 
+{
+  if (Serial.available() > 0 ) 
+  {
+    // get the new byte:
+    char inChar = (char)Serial.read();
+    inputString += inChar;
+ 
+    if(inChar == '\n')
+    {
+      stringComplete = true;
+    }
   }
-*/
+   
+}
+
+
 void update_All_data()
   {
   uint8_t   date_cor = 0;
