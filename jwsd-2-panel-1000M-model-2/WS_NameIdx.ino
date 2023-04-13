@@ -23,7 +23,7 @@ char * jamUtama()
  */
 // char *drawInfo()
 //  {   static char Buff[50];
-//      sprintf(Buff,"%s" ,text);
+//      sprintf(Buff,"%s" ,"TPQ AS-SA'ADAH Gampang-Prambon");
 //      return Buff;
 //  }
 /*

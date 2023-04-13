@@ -59,46 +59,30 @@ char *mounthJawa[]= {"Muharram",
                      "Dzulhijah"};
 
 
+char *bulanN[]= {"Januari",
+                 "Februari",
+                 "Maret",
+                 "April",
+                 "Mei",
+                 "Juni",
+                 "Juli",
+                 "Agustus",
+                 "September",
+                 "Oktober",
+                 "November",
+                 "Desember"};
 
-char *sholatCall[] = {"IMSAK","SUBUH","TERBIT","DHUHA","DUHUR","ASHAR","MAGRIB","ISYA","JUM'AT"};               
-//char *hariN[]= {"Minggu","Senin","Selasa","Rabu","Kamis","Jum'at","Sabtu"};
-char *bulanN[]= {"Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"};
+
+
+
+
+                 
+
 int maxday[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
 RTClib          RTC;
 DS3231          Clock;
 
-char text[50];
-/*
-//Structure of Variable 
-typedef struct  // loaded to EEPROM
-  {
-    uint8_t state;   // 1 byte  add 0
-    float   L_LA;    // 4 byte  add 1
-    float   L_LO;    // 4 byte  add 5
-    float   L_AL;    // 4 byte  add 9
-    float   L_TZ;    // 4 byte  add 13
-    uint8_t MT;      // 1 byte  add 17  // value 1-masjid  2-mushollah 3-surau 4-langgar 
-    uint8_t BL;      // 1 byte  add 18
-    uint8_t IH;      // 1 byte  add 19
-    uint8_t SO;      // 1 byte  add 20
-    uint8_t JM;      // 1 byte  add 21
-    uint8_t I1;      // 1 byte  add 22
-    uint8_t I4;      // 1 byte  add 23
-    uint8_t I5;      // 1 byte  add 24
-    uint8_t I6;      // 1 byte  add 25
-    uint8_t I7;      // 1 byte  add 26
-    uint8_t BZ;      // 1 byte  add 27
-    uint8_t SI;      // 1 byte  add 28
-    uint8_t ST;      // 1 byte  add 29
-    uint8_t SU;      // 1 byte  add 30
-    int8_t  CH;      //20 1 byte  add 31
-    int8_t  II;      //21 1 byte  add 32
-    int8_t  IS;      //22 1 byte  add 33
-    int8_t  IL;      //23 1 byte  add 34
-    int8_t  IA;      //24 1 byte  add 35
-    int8_t  IM;      //25 1 byte  add 36
-  } struct_param;
-*/
 typedef struct  
   { 
     uint8_t   hD;
@@ -107,8 +91,7 @@ typedef struct
   } hijir_date;
 
    
-// Variable by Structure     
-//struct_param    Prm;
+// Variable by Structure                    
 hijir_date      nowH;   
 
 // Time Variable
@@ -118,49 +101,48 @@ uint8_t         daynow     = 0;
 uint8_t         ty_puasa   = 0;
 uint8_t         hd_puasa   = 0; 
 int8_t          SholatNow  = -1;
-boolean         jumat      = false;
-boolean         azzan      = false;
+//boolean         jumat      = false;
+//boolean         azzan      = false;
 uint8_t         reset_x    = 0;   
 
-//Other Variable
-float sholatT[8]  = {0,0,0,0,0,0,0,0};
-uint8_t Iqomah[8] = {0,0,0,0,0,0,0,0};
-
-//Blue tooth Pram Receive
-char        CH_Prm[155];
 int         DWidth  = Disp.width();
 int         DHeight = Disp.height();
 boolean     DoSwap;
 int         RunSel    = 1; //
 int         RunFinish = 0 ;
-const byte reset = 4;
-bool trigg;
-unsigned long   lsTmr;
-     unsigned long   lsYClock;
-     int   xDate=0; 
-     int   xInfo=0;  
-     unsigned long lsText_1=0;
-     unsigned long lsText_2=0;
-      bool state1;
-      int xLine ; //DWidth/2;
-      int Dwidth = DWidth - 33;
-      String inputString="";
-      bool stringComplete = false;
-      int Bright = 10;
-      int setHours,setMinutes;
-      int Screen=0;
+
+int Speed_1;
+int xLine ; //DWidth/2;
+int Dwidth = DWidth - 33;
+int Bright = 10;
+int setHours,setMinutes;
+int Screen=0;
+int idxText;
+int addressCharArray;
+const int maxAllowedWrites = 80;
+const int memBase          = 350;
+
+unsigned long   lsYClock;
+
+String inputString="";
+bool stringComplete = false;
+char text[100];
+//bool on=false;
+
+
 //=======================================
 //===SETUP=============================== 
 //=======================================
 void setup()
-  { //init comunications 
-    Wire.begin();
+{ //init comunications 
     Serial.begin(9600);
+    //while(on){ loadMemory(); on = false; }
+    Wire.begin();
     pinMode(Ind,OUTPUT);
     pinMode(BUZZ, OUTPUT); 
     digitalWrite(Ind,HIGH);
-    
-    delay(1000);
+    //inputString.reserve(500);
+    loadMemory();
     for(int i = 0; i < 2; i++)
     {
       digitalWrite(BUZZ,HIGH); 
@@ -169,38 +151,31 @@ void setup()
       delay(100);
     }
     updateTime();
-    inputString.reserve(200);
-    //init P10 Led Disp & Salam
     Disp_init();
-   // text= "TPQ AS-SA'ADAH Gampang-Prambon";
-  }
-
+   
+}
 //=======================================
 //===MAIN LOOP Function =================   
 //=======================================
 void loop()
-{
+{   
     update_All_data();   //every time
     Indikator(500);
-   
+ 
 if(Screen == 0)
 {
-     cekInput();
-     //showPanel(1);
+  showPanel();
 }
+
+
 
 if(Screen == 1)
 {
-   cekInput();
-   showPanel(0);
    setBright(Bright);
-   
 }
 
 if(Screen == 2)
 {
-  cekInput();
-  showPanel(0);
   setClockk();
 }
 
@@ -233,7 +208,23 @@ if(Screen == 2)
      else if(inputString.substring(0,2) == "TX")
      {
       inputString.remove(0,2);
-      inputString.toCharArray(text,50);
+      delay(50);
+      idxText = inputString.length();
+      inputString.toCharArray(text,idxText);
+      EEPROM.put(addressCharArray,text);
+      reset_x=1;
+      inputString = "";
+      stringComplete = false;
+    }
+
+    else if(inputString.substring(0,2) == "SP")
+    {
+      inputString.remove(0,2);
+      Speed_1 = inputString.toInt();
+      delay(50);
+      EEPROM.update(1,Speed_1); 
+      //Serial.println(String() + "Speed_1:" + Speed_1 );
+      reset_x=1;
       inputString = "";
       stringComplete = false;
     }
@@ -241,6 +232,9 @@ if(Screen == 2)
      {
       inputString.remove(0,2);
       Bright = inputString.toInt();
+      delay(50);
+      EEPROM.update(0,Bright);
+      delay(50);
       setBrightness(Bright);
       inputString = "";
       stringComplete = false;
@@ -249,12 +243,14 @@ if(Screen == 2)
     else if(inputString.substring(0,2) == "CK")
     {
       String setJam,setMenit;
-      
       inputString.remove(0,2);
+      delay(50);
       setJam = inputString.substring(0,2);    
       setMenit = inputString.substring(3,5);
       setHours = setJam.toInt();
       setMinutes = setMenit.toInt();
+      Clock.setHour(setHours);
+      Clock.setMinute(setMinutes);
       inputString = "";
       stringComplete = false;
     }
@@ -269,28 +265,26 @@ if(Screen == 2)
     // List of Display Component Block =========
     // =========================================
 
- //runText(DATE(),drawNama(),40,40,1);
-
     // =========================================
     // Display Control Block ===================
     // =========================================
- //   if(RunFinish==1) {RunSel = 1; RunFinish =0;}                      //after anim 1 set anim 2
-   // if(RunFinish==2) {RunSel = 1; RunFinish =0;}                      //after anim 2 set anim 3
-//    if(RunFinish==3) {RunSel = 1; RunFinish =0;}
-//    if(RunFinish==4)  {RunSel = 1;  RunFinish =0;} 
+    // if(RunFinish==1) {RunSel = 1; RunFinish =0;}                      //after anim 1 set anim 2
+    // if(RunFinish==2) {RunSel = 1; RunFinish =0;}                      //after anim 2 set anim 3
+    // if(RunFinish==3) {RunSel = 1; RunFinish =0;}
+    // if(RunFinish==4)  {RunSel = 1;  RunFinish =0;} 
   
     // =========================================
     // Swap Display if Change===================
     // =========================================
-    
-   // if(DoSwap){Disp.swapBuffers();} // Swap Buffer if Change
+     
+    //if(DoSwap){Disp.swapBuffers();} // Swap Buffer if Change
   }
 // =========================================
 // DMD3 P10 utility Function================
 // =========================================
 void Disp_init() 
   { Disp.setDoubleBuffer(true);
-    Timer1.initialize(2500);
+    Timer1.initialize(2000);
     Timer1.attachInterrupt(scan);
     setBrightness(Bright);
     fType(1);  
@@ -314,31 +308,33 @@ void updateTime()
     daynow   = Clock.getDoW();    // load day Number
   }
   
-void cekInput() 
+void serialEvent() 
 { // Serial.println(String() + "cekInput");
-  if(Serial.available() == 0 && Screen != 1 && Screen != 2){ showPanel(1); }
-  if (Serial.available() > 0 ) 
-  {
-    // get the new byte:
-    char inChar = (char)Serial.read();
-    inputString += inChar;
- 
-    if(inChar == '\n')
-    {
-      stringComplete = true;
-    }
-  } 
+ int prm_idx = 0;
+    char bchar;
+
+        while ((bchar != '\n')and(inputString.toInt() < 149))
+          {
+          if(Serial.available() > 0)
+            { 
+              bchar = Serial.read();
+              inputString+=bchar;
+              digitalWrite (BUZZ, HIGH);
+              delay(20);
+              digitalWrite (BUZZ, LOW);
+            }
+           
+          }
+          if(bchar == '\n'){ stringComplete=true; }
+
 }
 
 
+
 void update_All_data()
-  {
+{
   uint8_t   date_cor = 0;
-  updateTime();
-  //sholatCal();                                                // load Sholah Time                                         // check jadwal Puasa Besok
+  updateTime();                                                                                // check jadwal Puasa Besok
   if(floatnow>18.00) {date_cor = 1;}                     // load Hijr Date + corection next day after Mhagrib 
   nowH = toHijri(now.year(),now.month(),now.day(),date_cor);  // load Hijir Date
-  
-//  if ((floatnow > (float)21) or (floatnow < (float)3.5) )    {setBrightness(15);}
-//      else                                                   {setBrightness(Prm.BL);}  
-  }
+}

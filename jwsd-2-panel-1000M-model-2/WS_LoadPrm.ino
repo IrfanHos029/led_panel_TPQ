@@ -1,42 +1,37 @@
 /*------------------------------------------
 // Function Setup Parameter EEPROM
 ------------------------------------------*/
-/* Struktur Data EEPROM 
- *      1   byte add 0    unit8_t       Parameter State  212 if ok    
- *      4   byte add 1    float         Latitude         code NLA
- *      4   byte add 5    float         Longitude        code NLO
- *      4   byte add 9    float         Altitude         code NAL   
- *      4   byte add 13   float         TimeZone         code NTZ
- *      1   byte add 17   uint8_t       Masjid Type      code NMT
- *      1   byte add 18   uint8_t       Led Brighnest    code NBL
- *      1   byte add 19   uint8_t       Iqomah Time      code NIH  -- waktu tunggu iqomah
- *      1   byte add 20   uint8_t       Sholat Time      code NSO  -- waktu tunggu sholat
- *      1   byte add 21   uint8_t       Jum'at Time      code NJM  -- waktu tunggu khutbah jumat
- *      1   byte add 22   uint8_t       IH Subuh         code NI0  -- waktu iqomah subuh
- *      1   byte add 23   uint8_t       IH Dhuhur        code NI3  -- waktu iqomah Dhuhur
- *      1   byte add 24   uint8_t       IH Ashar         code NI4  -- waktu iqomah Ashar
- *      1   byte add 25   uint8_t       IH Maghrib       code NI5  -- waktu iqomah Magrib
- *      1   byte add 26   uint8_t       IH Isya          code NI6  -- waktu iqomah Isya
- *      1   byte add 27   uint8_t       Buzzer           code NBZ  -- Buzzer on/off
- *      1   byte add 28   uint8_t       Show Iqomah      code NSI  -- Imsak on/off
- *      1   byte add 28   uint8_t       Show Terbit      code NST  -- Terbit on/off
- *      1   byte add 28   uint8_t       Show Dhuha       code NSU  -- Dhuha on/off
- *    
- *    
- *      26   byte add 29   -------  EMPTY  --------
- *      50  byte add 55   char          Masjid Name      code CMN    
- *      150 byte add 130   char         Info 1           code CN2
- *      150 byte add 280  char          Info 2           code CN2
- *      150 byte add 430  char          Info 3           code CN3
- *      150 byte add 580  char          Sholat Message   code CSM  -- pesan mejelang sholat biasa
- *      150 byte add 730  char          Jumat Message    code CJM  -- pesan setelah azan 
- *      144 byte add 880  -------  EMPTY  --------
- *  
- *      Memory Size arduino Uno
- *        Flash  32k bytes (of which .5k is used for the bootloader)
- *        SRAM   2k bytes
- *        EEPROM 1k byte
- *
+/*
+ * STRUCTUR DATA EPPROM
+ * 1 -> BRIGHT
+ * 2 -> SPEED
+ * 9 -> PARAMETER JUMBLAH TEXT
+ * 10 ->TEXT
+ */
+
+
+void loadMemory()
+{
+
+    addressCharArray = 300;
+    delay(100);
+    EEPROM.get(0,Bright);
+    EEPROM.get(1,Speed_1);
+    //EEPROM.get(9,idxText);
+    EEPROM.get(addressCharArray, text); 
+//
+   // Serial.println(String() + "Bright:" + Bright);
+   // Serial.println(String() + "idxText:" + idxText);
+//    Serial.println(String() + "Speed_1:" + Speed_1);
+//   Serial.println(String() + "dataE:" + text);
+    
+}
+
+
+
+
+
+/*
 
 void serialEvent()
   { 
