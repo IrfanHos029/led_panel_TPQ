@@ -142,7 +142,7 @@ void setup()
     pinMode(BUZZ, OUTPUT); 
     digitalWrite(Ind,HIGH);
     //inputString.reserve(500);
-    loadMemory();
+   // loadMemory();
     for(int i = 0; i < 2; i++)
     {
       digitalWrite(BUZZ,HIGH); 

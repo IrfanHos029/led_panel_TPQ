@@ -20,10 +20,10 @@ void loadMemory()
     //EEPROM.get(9,idxText);
     EEPROM.get(addressCharArray, text); 
 //
-   // Serial.println(String() + "Bright:" + Bright);
+    Serial.println(String() + "Bright:" + Bright);
    // Serial.println(String() + "idxText:" + idxText);
-//    Serial.println(String() + "Speed_1:" + Speed_1);
-//   Serial.println(String() + "dataE:" + text);
+    Serial.println(String() + "Speed_1:" + Speed_1);
+   Serial.println(String() + "dataE:" + text);
     
 }
 
