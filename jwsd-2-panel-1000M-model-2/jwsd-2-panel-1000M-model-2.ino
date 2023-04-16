@@ -114,6 +114,7 @@ int         RunSel    = 1; //
 int         RunFinish = 0 ;
 
 int Speed_1;
+bool stateBuzz;
 int xLine ; //DWidth/2;
 int Dwidth = DWidth - 33;
 int Bright = 10;
@@ -185,6 +186,7 @@ if(Screen == 2)
  {
    if(inputString.substring(0,2) == "S1")
    {//Serial.println(inputString);
+      BuzzerDouble(stateBuzz);
       Disp.clear(); 
       inputString = "";
       Screen = 1;
@@ -193,6 +195,7 @@ if(Screen == 2)
 
      else if(inputString.substring(0,2) == "S2")
     {//Serial.println(inputString);
+      BuzzerDouble(stateBuzz);
       Disp.clear(); 
       inputString = "";
       Screen = 2;
@@ -201,6 +204,7 @@ if(Screen == 2)
 
     else if(inputString.substring(0,2) == "EX")
     {//Serial.println(inputString);
+      BuzzerDouble(stateBuzz);
       Disp.clear(); 
       inputString = "";
       Screen = 0;
@@ -208,6 +212,7 @@ if(Screen == 2)
     }
      else if(inputString.substring(0,2) == "TX")
      {//Serial.println(inputString);
+      BuzzerDouble(stateBuzz);
       inputString.remove(0,2);
       delay(50);
       idxText = inputString.length();
@@ -220,6 +225,7 @@ if(Screen == 2)
 
     else if(inputString.substring(0,2) == "SP")
     {//Serial.println(inputString);
+      BuzzerDouble(stateBuzz);
       inputString.remove(0,2);
       Speed_1 = inputString.toInt();
       delay(50);
@@ -231,6 +237,7 @@ if(Screen == 2)
     }
     else if(inputString.substring(0,2) == "BT")
      {//Serial.println(inputString);
+      BuzzerDouble(stateBuzz);
       inputString.remove(0,2);
       Bright = inputString.toInt();
       delay(50);
@@ -243,6 +250,7 @@ if(Screen == 2)
 
     else if(inputString.substring(0,2) == "CK")
     {//Serial.println(inputString);
+      BuzzerDouble(stateBuzz);
       String setJam,setMenit;
       inputString.remove(0,2);
       delay(50);
@@ -256,11 +264,23 @@ if(Screen == 2)
       stringComplete = false;
     }
 
+    else if(inputString.substring(0,2) == "SB")
+    {
+      BuzzerDouble(stateBuzz);
+      inputString.remove(0,2);
+      delay(50);
+      stateBuzz = inputString.toInt();
+      EEPROM.update(3,stateBuzz);
+      inputString = "";
+      stringComplete = false;
+    }
+
     else
     {
        inputString="";
     }
 }
+
    
     // =========================================
     // List of Display Component Block =========

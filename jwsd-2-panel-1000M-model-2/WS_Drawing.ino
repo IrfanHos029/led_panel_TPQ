@@ -324,6 +324,24 @@ void Buzzer(uint8_t state)
     else 
       {digitalWrite(BUZZ,LOW);}
   }
+
+  void BuzzerDouble(uint8_t state)
+  {
+    if(state)
+      {
+        for(int i = 0; i < 1; i++)
+        {
+        digitalWrite(BUZZ,HIGH);
+        delay(50);
+        digitalWrite(BUZZ,LOW);
+        delay(50);
+        }
+      }
+     else
+      {
+        digitalWrite(BUZZ,LOW);
+      }
+  }
   
 void fType(int x)
   {

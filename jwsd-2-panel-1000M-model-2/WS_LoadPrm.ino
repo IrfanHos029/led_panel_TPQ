@@ -5,6 +5,7 @@
  * STRUCTUR DATA EPPROM
  * 1 -> BRIGHT
  * 2 -> SPEED
+ * 3 -> STATUS BUZZER
  * 9 -> PARAMETER JUMBLAH TEXT
  * 10 ->TEXT
  */
@@ -19,11 +20,13 @@ void loadMemory()
     delay(100);
     Speed_1 = EEPROM.read(2);
     delay(100);
+    stateBuzz = EEPROM.read(3);
+    delay(100);
     EEPROM.get(300, text); 
 //    Serial.println(String() + "Bright:" + Bright);
-//   // Serial.println(String() + "idxText:" + idxText);
+//    Serial.println(String() + "stateBuzz:" + stateBuzz);
 //    Serial.println(String() + "Speed_1:" + Speed_1);
-//   Serial.println(String() + "dataE:" + text);
+//    Serial.println(String() + "dataE:" + text);
     
 }
 
