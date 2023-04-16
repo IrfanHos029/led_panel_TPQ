@@ -1,9 +1,11 @@
 /*************************************************************************************
-JAM_DIGITAL_MODIF 64 X 16
+JAM_DIGITAL_ABAH
 28/02/2021
 **************************************************************************************/
 #include <SPI.h>
 #include <DMD3asis.h>
+//#include <SoftwareSerial.h>
+//SoftwareSerial bluetooth(3,4);
 #include <font/KecNumber.h>
 #include <font/BigNumber.h>
 #include <font/Font4x6.h>
@@ -82,7 +84,7 @@ int maxday[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
 RTClib          RTC;
 DS3231          Clock;
-
+//SoftwareSerial soft(3,4);
 typedef struct  
   { 
     uint8_t   hD;
@@ -118,7 +120,7 @@ int Bright = 10;
 int setHours,setMinutes;
 int Screen=0;
 int idxText;
-int addressCharArray;
+int  addressCharArray = 0;
 const int maxAllowedWrites = 80;
 const int memBase          = 350;
 
@@ -135,14 +137,15 @@ char text[100];
 //=======================================
 void setup()
 { //init comunications 
+    
     Serial.begin(9600);
-    //while(on){ loadMemory(); on = false; }
+    loadMemory();
     Wire.begin();
     pinMode(Ind,OUTPUT);
     pinMode(BUZZ, OUTPUT); 
     digitalWrite(Ind,HIGH);
     //inputString.reserve(500);
-   // loadMemory();
+    
     for(int i = 0; i < 2; i++)
     {
       digitalWrite(BUZZ,HIGH); 
@@ -152,16 +155,14 @@ void setup()
     }
     updateTime();
     Disp_init();
-   
+ 
 }
 //=======================================
 //===MAIN LOOP Function =================   
 //=======================================
-void loop()
-{   
-    update_All_data();   //every time
-    Indikator(500);
- 
+ void loop(){
+  update_All_data();
+  
 if(Screen == 0)
 {
   showPanel();
@@ -183,7 +184,7 @@ if(Screen == 2)
  if (stringComplete) 
  {
    if(inputString.substring(0,2) == "S1")
-   {
+   {//Serial.println(inputString);
       Disp.clear(); 
       inputString = "";
       Screen = 1;
@@ -191,7 +192,7 @@ if(Screen == 2)
    }
 
      else if(inputString.substring(0,2) == "S2")
-    {
+    {//Serial.println(inputString);
       Disp.clear(); 
       inputString = "";
       Screen = 2;
@@ -199,41 +200,41 @@ if(Screen == 2)
     }
 
     else if(inputString.substring(0,2) == "EX")
-    {
+    {//Serial.println(inputString);
       Disp.clear(); 
       inputString = "";
       Screen = 0;
       stringComplete = false;
     }
      else if(inputString.substring(0,2) == "TX")
-     {
+     {//Serial.println(inputString);
       inputString.remove(0,2);
       delay(50);
       idxText = inputString.length();
       inputString.toCharArray(text,idxText);
-      EEPROM.put(addressCharArray,text);
+      EEPROM.put(300,text);
       reset_x=1;
       inputString = "";
       stringComplete = false;
     }
 
     else if(inputString.substring(0,2) == "SP")
-    {
+    {//Serial.println(inputString);
       inputString.remove(0,2);
       Speed_1 = inputString.toInt();
       delay(50);
-      EEPROM.update(1,Speed_1); 
+      EEPROM.update(2,Speed_1); 
       //Serial.println(String() + "Speed_1:" + Speed_1 );
       reset_x=1;
       inputString = "";
       stringComplete = false;
     }
     else if(inputString.substring(0,2) == "BT")
-     {
+     {//Serial.println(inputString);
       inputString.remove(0,2);
       Bright = inputString.toInt();
       delay(50);
-      EEPROM.update(0,Bright);
+      EEPROM.update(1,Bright);
       delay(50);
       setBrightness(Bright);
       inputString = "";
@@ -241,7 +242,7 @@ if(Screen == 2)
     }
 
     else if(inputString.substring(0,2) == "CK")
-    {
+    {//Serial.println(inputString);
       String setJam,setMenit;
       inputString.remove(0,2);
       delay(50);
@@ -307,29 +308,23 @@ void updateTime()
     floatnow = (float)now.hour() + (float)now.minute()/60 + (float)now.second()/3600;
     daynow   = Clock.getDoW();    // load day Number
   }
-  
+
 void serialEvent() 
-{ // Serial.println(String() + "cekInput");
- int prm_idx = 0;
-    char bchar;
-
-        while ((bchar != '\n')and(inputString.toInt() < 149))
+{ 
+    char bchar;         
+           while ((bchar != '\n')and(inputString.length() < 150))
           {
-          if(Serial.available() > 0)
+          if(Serial.available())
             { 
-              bchar = Serial.read();
-              inputString+=bchar;
-              digitalWrite (BUZZ, HIGH);
-              delay(20);
-              digitalWrite (BUZZ, LOW);
+             bchar = Serial.read();   
+            inputString+=bchar;
+            //Serial.println(String() + "karakter:" + bchar);
+             
             }
-           
+            if(bchar == '\n'){ digitalWrite (BUZZ, LOW); stringComplete=true;  break;}
           }
-          if(bchar == '\n'){ stringComplete=true; }
-
+    
 }
-
-
 
 void update_All_data()
 {

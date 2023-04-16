@@ -12,18 +12,18 @@
 
 void loadMemory()
 {
-
-    addressCharArray = 300;
+   int brig,sped;
+   
     delay(100);
-    EEPROM.get(0,Bright);
-    EEPROM.get(1,Speed_1);
-    //EEPROM.get(9,idxText);
-    EEPROM.get(addressCharArray, text); 
-//
-    Serial.println(String() + "Bright:" + Bright);
-   // Serial.println(String() + "idxText:" + idxText);
-    Serial.println(String() + "Speed_1:" + Speed_1);
-   Serial.println(String() + "dataE:" + text);
+    Bright = EEPROM.read(1);
+    delay(100);
+    Speed_1 = EEPROM.read(2);
+    delay(100);
+    EEPROM.get(300, text); 
+//    Serial.println(String() + "Bright:" + Bright);
+//   // Serial.println(String() + "idxText:" + idxText);
+//    Serial.println(String() + "Speed_1:" + Speed_1);
+//   Serial.println(String() + "dataE:" + text);
     
 }
 
